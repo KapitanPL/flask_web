@@ -1,0 +1,20 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% if title %}Kapitán: {{ title }}{% else %}Kapitán papírového loďstva{% endif %}
+{% endblock %}
+
+<html>
+    <head>
+        {% if title %}
+            <title>Kapitán: {{ title }}</title>
+        {% else %}
+            <title>Kapitán papírového loďstva</title>
+        {% endif %}
+    </head>
+     <body>
+         <div><a href="/index">Domů</a></div>
+         <hr>
+         {% block content %}{% endblock %}
+     </body>
+</html>
