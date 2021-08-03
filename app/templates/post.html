@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<html>
+    <body>
+        <h1><b>{{ post.name }}</b></h1>
+        <div class="d-flex flex-row">
+            {% for tag in post.getTags() %}
+                <div class="p-2" ><a href="{{ url_for('tagged', tag_id=tag.id) }}">#{{ tag.value }}</a></div>
+            {% endfor %}
+        </div>
+        <br>
+        <div> {{ post.abstract }} </div>
+        <br>
+        <div class="d-flex flex-column flex-item-mine">{{ content|markdown }}</div>
+        <br>
+        {% if form %}
+            {% include '_newcomment.html' %}
+        {% endif %}
+        <br>
+        {% for comment in comments %}
+            {% include '_comment.html' %}
+            <br>
+        {% endfor %}
+
+    </body>
+</html>
+{% endblock %}

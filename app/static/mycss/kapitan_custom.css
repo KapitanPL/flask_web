@@ -1,0 +1,24 @@
+.navbar-custom {
+  background-color: rgb(194, 223, 233);
+}
+
+.nav-link-mine {
+  color: black;
+}
+
+.flex-item-mine {
+  background-color: rgb(194, 223, 233);
+}
+
+.basic-background {
+  background-color: rgb(240, 220, 190);
+}
+
+body {
+  background-color: rgb(240, 220, 190);
+}
+
+.raised-above-link {
+  z-index:3;
+  position:relative;
+}

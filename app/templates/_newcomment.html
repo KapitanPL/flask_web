@@ -1,0 +1,14 @@
+    <div class="d-flex flex-column position-relative flex-item-mine">
+         <b>Chceš něco dodat?</b>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.text(rows='3',class="w-100") }}
+            </div>
+            <div class="d-flex flex-row position-relative">
+                <div>Jméno?</div> 
+                <div>{{ form.name(size=16) }}</div>
+                <div>{{ form.submit() }}</div>
+                <!--<div>{{ form.recaptcha }}</div>-->
+        </form>
+    </div>

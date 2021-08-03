@@ -1,5 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 venv/
+migrations/
+temp/
 *.py[cod]
 *bkp
+prepare.sh
+*db

@@ -3,7 +3,20 @@
 {% block app_content %}
 <html>
     <body>
-        <h1><b>Arrggh!</b> Poslední drby...</h1>
+        {% if section_title %}
+            <h3>{{ section_title }}</h3>
+        {% else %}
+            <h1><b>Arrggh!</b> Poslední drby...</h1>
+        {% endif %}
+        
+        {% if section_body %}
+            <div>{{ section_body }}</div>
+        {% endif %}
+
+        {% for post in posts %}
+            {% include '_post_abstract.html' %}
+            <br>
+        {% endfor %}
     </body>
 </html>
 {% endblock %}
