@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<html>
+    <body>
+    <div class="d-flex flex-column position-relative flex-item-mine">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div><b>Titulek</b></div>
+            <div>{{ form.name(size=32) }}</div>
+            <div><b>Tagy</b></div>
+            <div>{{ form.tags(size=32) }}</div>
+            <div><b>Abstrakt</b></div>
+            <div>{{ form.abstract(rows='3',class="w-100") }}</div>
+            <div>{{ form.file }}</div>
+            <div>{{ form.submit() }}</div>
+        </form>
+    </div>
+    </body>
+</html>
+{% endblock %}
