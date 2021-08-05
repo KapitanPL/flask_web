@@ -23,7 +23,7 @@ def login():
        if user is None or not user.check_password(form.password.data):
            return redirect(url_for('login'))
        login_user(user)
-       index()
+       return index()
     return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout', methods=['POST'])
