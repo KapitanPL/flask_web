@@ -26,8 +26,19 @@
             {% for tag in tags %}
                 <li class="nav-item" ><a class="nav-link nav-link-mine" href="{{ url_for('tagged', tag_id=tag.id) }}">{{ tag.value }}</a></li>
             {% endfor %}
-      </ul>
+        </ul>
     </div>
+    {% if current_user.is_anonymous %}
+        {% else %}
+        <div class="nav navbar-nav navbar-right">
+            <form action="{{ url_for('logout') }}" method="post">
+                <input type="image" src="{{url_for('static', filename='svg/kapitan_leave.svg')}}" class="img-fluid" width="40" height="40"/>
+            </form>
+            <form action="{{ url_for('new_post') }}" method="post">
+                <input type="image" src="{{url_for('static', filename='svg/kapitan_new_post.svg')}}" class="img-fluid" width="40" height="40"/>
+            </form>
+        </div>
+        {% endif %}
   </div>
 </nav>
 

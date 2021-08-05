@@ -10,3 +10,4 @@ class Config(object):
     RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY') or 'public'
     RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY') or 'private'
     RECAPTCHA_OPTIONS = {'theme': 'white'}
+    UPLOAD_EXTENSIONS = ['.md']

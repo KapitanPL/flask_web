@@ -1,7 +1,11 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
+from flask_login.utils import login_required
 from app import app, db
-from app.models import Article, Tag, Comment
-from app.forms import CommentForm
+from app.models import Article, Tag, Comment, User
+from app.forms import CommentForm, LoginForm, NewPostForm
+from flask_login import login_user, logout_user
+from werkzeug.utils import secure_filename
+import os
 
 @app.route('/')
 @app.route('/index')
@@ -10,6 +14,42 @@ def index():
                     Article.timestamp.desc())
         tags = Tag.query.order_by(Tag.used.desc())
         return render_template('index.html',posts=posts,tags=tags)
+
+@app.route('/kapitannamustku', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+       user = User.query.get(1)
+       if user is None or not user.check_password(form.password.data):
+           return redirect(url_for('login'))
+       login_user(user)
+       index()
+    return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    logout_user()
+    return redirect(request.referrer)
+
+@app.route('/new_post', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = NewPostForm()
+    if form.validate_on_submit():
+       filename = secure_filename(form.file.data.filename)
+       form.file.data.save('temp/' + filename)
+       tag_strings = form.tags.data.split(';')
+       tags = list()
+       for tag in tag_strings:
+              tags.append(Tag.addTagRecord(tag))
+       if not os.path.exists('uploads'):
+              os.mkdir('uploads')
+       Article.addnewArticle('uploads/' + filename, form.name.data, form.abstract.data, tags, None)
+       return index()
+    posts = Article.query.order_by(
+                    Article.timestamp.desc())
+    tags = Tag.query.order_by(Tag.used.desc())
+    return render_template('new_post.html',posts=posts,tags=tags, form=form)
 
 @app.route('/<tag_id>/tagged', methods=['GET'])
 def tagged(tag_id):

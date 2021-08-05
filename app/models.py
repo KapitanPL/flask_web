@@ -1,13 +1,31 @@
 from datetime import datetime
 from enum import unique
 from app import db
+from app import login
+from flask_login import UserMixin
 from markupsafe import Markup
 import markdown
+from werkzeug.security import generate_password_hash, check_password_hash
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 tagged = db.Table('tagged',
     db.Column('article_id', db.Integer, db.ForeignKey('article.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
+
+class User(UserMixin,db.Model):
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    name = db.Column(db.String(256))
+    password_hash = db.Column(db.String(128))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class ArticleCache:
     taggedArticles = None
@@ -101,14 +119,39 @@ class Article(db.Model):
     def getTaggedArticles(tag_id):
         return Article.query.join(
             tagged, ( tagged.c.article_id == Article.id )).filter( tagged.c.tag_id == tag_id )
+    
+    @staticmethod
+    def addnewArticle(file, name, abstract, tags, image):
+        newArticle = Article()
+        newArticle.abstract = abstract
+        newArticle.file = file 
+        newArticle.name = name
+        if image:
+            newArticle.image = image
+        for tag in tags:
+            newArticle.addTag(tag)
+        db.session.add(newArticle)
+        db.session.commit()
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String(128), index=True, unique=True)
-    used = db.Column(db.Integer, default=0)
+    used = db.Column(db.Integer, default=1)
     articles = db.relationship("Article",
         secondary=tagged,
         back_populates="tags")
+
+    @staticmethod
+    def addTagRecord(tag):
+        tagRecord = Tag.query.filter( Tag.value == tag ).first()
+        if tagRecord:
+            tagRecord.used += 1
+        else:
+            tagRecord = Tag()
+            tagRecord.value = tag
+            db.session.add(tagRecord)
+        db.session.commit()  
+        return tagRecord
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -2,6 +2,10 @@
         <div class="d-flex flex-row">
             <div class="p-2"><b>{{ comment.name }}</b></div>
             <div class="p-2">{{ comment.getTime() }}</div>
+            {% if current_user.is_anonymous %}
+            {% else %}
+            <div class="p-2">Delete</div>
+            {% endif %}
         </div>
         <div>{{ comment.text }}</div>
     </div>
