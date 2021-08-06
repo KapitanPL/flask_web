@@ -8,7 +8,7 @@ class CommentForm(FlaskForm):
     text = TextAreaField('Comment', validators=[DataRequired()])
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Tak to řekni!')
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
 
 class LoginForm(FlaskForm):
     password = PasswordField('Heslo', validators=[DataRequired()])
