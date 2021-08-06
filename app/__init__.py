@@ -7,7 +7,9 @@ from flask_login import LoginManager
 from app.config import Config
 
 app = Flask(__name__)
-app.config.from_object(Config)
+conf = Config
+print(conf['SQLALCHEMY_DATABASE_URI'])
+app.config.from_object(conf)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 markdown = Markdown(app)
