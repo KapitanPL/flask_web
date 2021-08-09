@@ -36,14 +36,14 @@ def logout():
 def new_post():
     form = NewPostForm()
     if form.validate_on_submit():
+       if not os.path.exists('uploads'):
+              os.mkdir('uploads')
        filename = secure_filename(form.file.data.filename)
-       form.file.data.save('temp/' + filename)
+       form.file.data.save('uploads/' + filename)
        tag_strings = form.tags.data.split(';')
        tags = list()
        for tag in tag_strings:
               tags.append(Tag.addTagRecord(tag))
-       if not os.path.exists('uploads'):
-              os.mkdir('uploads')
        Article.addnewArticle('uploads/' + filename, form.name.data, form.abstract.data, tags, None)
        return index()
     posts = Article.query.order_by(

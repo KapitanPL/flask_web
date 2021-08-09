@@ -7,3 +7,4 @@ temp/
 *bkp
 prepare.sh
 *db
+.env
