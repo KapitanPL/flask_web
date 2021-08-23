@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<html>
+    <body>
+        <div class="d-flex flex-column position-relative flex-item-mine">
+        <meta id="tag_data" data-tags="{{ tagsContent }}">
+        <form action="" method="post" novalidate>
+            <div>{{ form.hidden_tag() }}</div>
+            <div>{{ form.tagSelect(**{"onchange" : "displayTagDescription()"}) }}</div>
+            <div>
+                {{ form.text(rows='3',class="w-100") }}
+            </div>
+            <div>{{ form.submit() }}</div>
+        </form>
+    </div>
+    </body>
+</html>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{url_for('static', filename='myjs/tags.js')}}"></script>
+{% endblock %}

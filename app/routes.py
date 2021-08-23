@@ -2,8 +2,9 @@ from flask import render_template, redirect, url_for, request
 from flask_login.utils import login_required
 from app import app, db
 from app.models import Article, Tag, Comment, User
-from app.forms import CommentForm, LoginForm, NewPostForm
+from app.forms import CommentForm, LoginForm, NewPostForm, EditTag
 from flask_login import login_user, logout_user
+import json
 from werkzeug.utils import secure_filename
 import os
 
@@ -56,7 +57,7 @@ def tagged(tag_id):
        posts = Article.getTaggedArticles(tag_id).order_by(Article.timestamp.desc())
        tags = Tag.query.order_by(Tag.used.desc())
        tag = Tag.query.filter( Tag.id == tag_id ).first_or_404()
-       return render_template('index.html',posts=posts,title=tag.value, tags=tags, section_title="Články s tagem {0}".format(tag.value))
+       return render_template('index.html',posts=posts,title=tag.value, tags=tags, section_title="Články s tagem {0}".format(tag.value), section_body=tag.description)
 
 @app.route('/<post_id>/post', methods=['GET', 'POST'])
 def post(post_id):
@@ -71,3 +72,19 @@ def post(post_id):
        content = post.getContent()
        displayComments = Comment.query.filter( Comment.article_id == post_id).order_by(Comment.timestamp.desc())
        return render_template('post.html',title=post.name,tags=tags,post=post,content=content,form=commentForm,comments=displayComments)
+
+@app.route('/tags', methods=['GET', 'POST'])
+@login_required
+def tags():
+       tags = Tag.query.order_by(Tag.description.desc())
+       tagForm = EditTag(form_name='EditTags')
+       tagForm.tagSelect.choices = [ tag.value for tag in tags ]
+       if( tagForm.validate_on_submit() ):
+              targetTag = Tag.query.filter( Tag.value == tagForm.tagSelect.data ).first()
+              targetTag.description = tagForm.text.data
+              db.session.commit()
+              return redirect(url_for('tags'))
+       tagForm.text.data = tags[0].description
+       tagContent={ tag.value : tag.description for tag in tags }
+       tagContent=json.dumps(tagContent)
+       return render_template('tags.html', title="tagy", tags=tags, form=tagForm, tagsContent=tagContent)

@@ -28,9 +28,10 @@
             {% endfor %}
         </ul>
     </div>
-    {% if current_user.is_anonymous %}
+        {% if current_user.is_anonymous %}
         {% else %}
         <div class="nav navbar-nav navbar-right">
+            <a class="nav-link nav-link-mine" href="{{ url_for('tags') }}">Tagy</a>
             <form action="{{ url_for('logout') }}" method="post">
                 <input type="image" src="{{url_for('static', filename='svg/kapitan_leave.svg')}}" class="img-fluid" width="40" height="40"/>
             </form>
@@ -57,8 +58,10 @@
     </div>
 {% endblock %}
 
-
-<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+{% block scripts %}
+    <script src="{{url_for('static', filename='js/jquery-3.6.0.slim.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+{% endblock %}
 
 </body>
 </html>

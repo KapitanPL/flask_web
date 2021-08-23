@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, TextAreaField, SubmitField
+from wtforms import StringField, TextAreaField, SubmitField, HiddenField
+from wtforms.fields.core import SelectField
 from wtforms.fields.simple import PasswordField
 from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import DataRequired
@@ -20,3 +21,9 @@ class NewPostForm(FlaskForm):
     abstract = TextAreaField('Abstract',validators=[DataRequired()])
     file = FileField(validators=[FileRequired()])
     submit = SubmitField('Odpal to...')
+
+class EditTag(FlaskForm):
+    form_name = HiddenField('Form Name')
+    tagSelect = SelectField('Jméno tagu', validators=[DataRequired()], id='select_tag')
+    text = TextAreaField('Popis tagu', validators=[DataRequired()], id='textArea_tag')
+    submit = SubmitField('Ulož!')
