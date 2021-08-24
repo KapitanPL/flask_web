@@ -6,8 +6,12 @@ from flask_login import LoginManager
 
 from app.config import Config
 
+import os
+
 app = Flask(__name__)
 conf = Config
+print(conf.SQLALCHEMY_DATABASE_URI)
+print(os.environ.get('DATABASE_URL'))
 app.config.from_object(conf)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
