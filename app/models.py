@@ -83,8 +83,8 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     file = db.Column(db.String(256), index=True, unique=True)
     image = db.Column(db.String(256), index=False, unique=False, default='svg/kapitan_logo_small.svg')
-    name = db.Column(db.String(256), index= True, unique=False)
-    abstract = db.Column(db.String(2048), index=False, unique=False)
+    name = db.Column(db.Unicode(256), index= True, unique=False)
+    abstract = db.Column(db.Unicode(2048), index=False, unique=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     tags = db.relationship("Tag",
         secondary=tagged,
@@ -137,7 +137,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String(128), index=True, unique=True)
     used = db.Column(db.Integer, default=1)
-    description = db.Column(db.String(2048), index=False, unique=False,default="Add description...")
+    description = db.Column(db.Unicode(2048), index=False, unique=False,default="Add description...")
     articles = db.relationship("Article",
         secondary=tagged,
         back_populates="tags")
@@ -156,8 +156,8 @@ class Tag(db.Model):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(2048), index=False, unique=False)
-    name = db.Column(db.String(256),  index=False, unique=False)
+    text = db.Column(db.Unicode(2048), index=False, unique=False)
+    name = db.Column(db.Unicode(256),  index=False, unique=False)
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
