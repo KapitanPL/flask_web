@@ -137,7 +137,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String(128), index=True, unique=True)
     used = db.Column(db.Integer, default=1)
-    description = db.Column(db.Unicode(2048, collation='cs_CZ.UTF-8'), index=False, unique=False,default="Add description...")
+    description = db.Column(db.String(2048, convert_unicode=True), index=False, unique=False,default="Add description...")
     articles = db.relationship("Article",
         secondary=tagged,
         back_populates="tags")
