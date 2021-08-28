@@ -12,6 +12,8 @@
         {% if section_body %}
             <div>{{ section_body | safe }}</div>
         {% endif %}
+        
+        <br>
 
         {% for post in posts %}
             {% include '_post_abstract.html' %}
