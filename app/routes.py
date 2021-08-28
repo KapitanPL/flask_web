@@ -57,7 +57,8 @@ def tagged(tag_id):
        posts = Article.getTaggedArticles(tag_id).order_by(Article.timestamp.desc())
        tags = Tag.query.order_by(Tag.used.desc())
        tag = Tag.query.filter( Tag.id == tag_id ).first_or_404()
-       return render_template('index.html',posts=posts,title=tag.value, tags=tags, section_title="Články s tagem {0}".format(tag.value), section_body=tag.description)
+       description = tag.description.replace("\n","<br>")
+       return render_template('index.html',posts=posts,title=tag.value, tags=tags, section_title="#{0}".format(tag.value), section_body=description)
 
 @app.route('/<post_id>/post', methods=['GET', 'POST'])
 def post(post_id):
