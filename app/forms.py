@@ -19,7 +19,8 @@ class NewPostForm(FlaskForm):
     name = StringField('Title',validators=[DataRequired()])
     tags = StringField('Tags',validators=[DataRequired()])
     abstract = TextAreaField('Abstract',validators=[DataRequired()])
-    file = FileField(validators=[FileRequired()])
+    # file = FileField(validators=[FileRequired()])
+    text = TextAreaField('Abstract',validators=[DataRequired()])
     submit = SubmitField('Odpal to...')
 
 class EditTag(FlaskForm):

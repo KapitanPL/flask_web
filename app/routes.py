@@ -37,20 +37,45 @@ def logout():
 def new_post():
     form = NewPostForm()
     if form.validate_on_submit():
-       if not os.path.exists('uploads'):
-              os.mkdir('uploads')
-       filename = secure_filename(form.file.data.filename)
-       form.file.data.save('uploads/' + filename)
        tag_strings = form.tags.data.split(';')
        tags = list()
        for tag in tag_strings:
               tags.append(Tag.addTagRecord(tag))
-       Article.addnewArticle('uploads/' + filename, form.name.data, form.abstract.data, tags, None)
+       Article.addnewArticle(form.text.data , form.name.data, form.abstract.data, tags, None)
        return index()
     posts = Article.query.order_by(
                     Article.timestamp.desc())
     tags = Tag.query.order_by(Tag.used.desc())
     return render_template('new_post.html',posts=posts,tags=tags, form=form)
+
+@app.route('/<post_id>/edit_post', methods=['GET', 'POST'])
+@login_required
+def edit_post(post_id):
+       this_post = Article.query.filter( Article.id == post_id).first_or_404()
+       form = NewPostForm()
+       if form.validate_on_submit():
+              tag_strings = form.tags.data.split(';')
+              tags = list()
+              for tag in tag_strings:
+                     tags.append(Tag.addTagRecord(tag))
+              this_post.name = form.name.data
+              this_post.abstract = form.abstract.data
+              this_post.updateContent( form.text.data )
+              db.session.commit()
+              return redirect(url_for('post', post_id=post_id))
+       form.name.data = this_post.name
+       tagString = str()
+       for tag in this_post.tags:
+              if tagString:
+                     tagString += ";"
+              tagString += tag.value
+       form.tags.data = tagString
+       form.abstract.data = this_post.abstract
+       form.text.data = this_post.getContent(raw = True)
+       posts = Article.query.order_by(
+                    Article.timestamp.desc())
+       tags = Tag.query.order_by(Tag.used.desc())
+       return render_template('new_post.html',posts=posts,tags=tags, form=form)
 
 @app.route('/<tag_id>/tagged', methods=['GET'])
 def tagged(tag_id):
@@ -64,7 +89,7 @@ def tagged(tag_id):
 def post(post_id):
        commentForm = CommentForm()
        post = Article.query.filter( Article.id == post_id ).first_or_404()
-       if ( commentForm.validate_on_submit() ):
+       if ( commentForm.validate_on_submit()):
               newComment=Comment(name=commentForm.name.data, text=commentForm.text.data, article=post)
               db.session.add(newComment)
               db.session.commit()
@@ -89,3 +114,12 @@ def tags():
        tagContent={ tag.value : tag.description for tag in tags }
        tagContent=json.dumps(tagContent)
        return render_template('tags.html', title="tagy", tags=tags, form=tagForm, tagsContent=tagContent)
+
+@app.route('/<comment_id>/delete_comment', methods=['GET', 'POST'])
+@login_required
+def delete_comment( comment_id ):
+       comment = Comment.query.filter( Comment.id == comment_id ).first_or_404()
+       post_id = comment.article_id
+       db.session.delete(comment)
+       db.session.commit()
+       return redirect(url_for('post', post_id=post_id))

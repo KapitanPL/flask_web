@@ -1,11 +1,8 @@
 import os
 
 try:
-    print("trying dotenv...")
     from dotenv import load_dotenv
     load_dotenv()
-    print("dotenv loaded")
-    print(os.environ.get('DATABASE_URL'))
 except:
     pass
 

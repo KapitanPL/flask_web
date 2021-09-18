@@ -4,6 +4,7 @@ venv/
 migrations/
 temp/
 uploads/
+articles/
 *.py[cod]
 *bkp
 prepare.sh

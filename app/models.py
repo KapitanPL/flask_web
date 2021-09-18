@@ -5,6 +5,9 @@ from app import login
 from flask_login import UserMixin
 from markupsafe import Markup
 import markdown
+import os
+import random
+import string
 from werkzeug.security import generate_password_hash, check_password_hash
 
 @login.user_loader
@@ -91,6 +94,7 @@ class Article(db.Model):
         back_populates="articles")
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
     cache = ArticleCache()
+    targetDir = "articles/"
 
     def addTag(self, tag):
         self.tags.append(tag)
@@ -111,19 +115,30 @@ class Article(db.Model):
             abstract = self.cache.getAbstract(self.id)
         return abstract
 
-    def getContent(self):
+    def getContent(self, raw = False):
         mdFile = open(self.file, 'r')
-        return markdown.markdown(mdFile.read(),extensions=['markdown.extensions.tables'] )
+        if raw:
+            out = mdFile.read()
+        else:
+            out = markdown.markdown(mdFile.read(),extensions=['markdown.extensions.tables'] )
+        mdFile.close()
+        return out
+
+    def updateContent(self, content):
+        mdFile = open(self.file, 'w')
+        mdFile.write(content)
+        mdFile.close()
 
     @staticmethod
     def getTaggedArticles(tag_id):
         return Article.query.join(
             tagged, ( tagged.c.article_id == Article.id )).filter( tagged.c.tag_id == tag_id )
-    
+
     @staticmethod
-    def addnewArticle(file, name, abstract, tags, image):
+    def addnewArticle(content, name, abstract, tags, image):
         newArticle = Article()
         newArticle.abstract = abstract
+        file = Article.createFile(content, name)
         newArticle.file = file 
         newArticle.name = name
         if image:
@@ -132,6 +147,31 @@ class Article(db.Model):
             newArticle.addTag(tag)
         db.session.add(newArticle)
         db.session.commit()
+
+    @staticmethod
+    def createFile(content, name):
+        if not os.path.exists(Article.targetDir):
+            os.makedirs(Article.targetDir)
+        name = Article.generateRandomFileName()
+        path = os.path.join(Article.targetDir, name)
+        if name:
+            fil =  open(path, 'w')
+            fil.write(content)
+            fil.close()
+        else:
+            raise NameError
+        return path
+
+
+    @staticmethod
+    def generateRandomFileName():
+        name = str()
+        while not name or os.path.exists(os.path.join(Article.targetDir, name)):
+            name = ''.join(random.choice(string.ascii_letters) for i in range(10))
+            name += ".md"
+        return name
+
+
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)

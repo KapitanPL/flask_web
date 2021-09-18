@@ -12,34 +12,35 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-custom">
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
   <div class="container">
     <a class="navbar-brand nav-link-mine" href="{{ url_for('index') }}">
         <img src="{{url_for('static', filename='svg/kapitan_logo_small.svg')}}" class="img-fluid" width="40" height="40" alt="">
         <b>Kapitán</b>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav">
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
             {% for tag in tags %}
-                <li class="nav-item" ><a class="nav-link nav-link-mine" href="{{ url_for('tagged', tag_id=tag.id) }}">{{ tag.value }}</a></li>
+                <li class="nav-item" ><a class="nav-link" href="{{ url_for('tagged', tag_id=tag.id) }}">{{ tag.value }}</a></li>
             {% endfor %}
         </ul>
     </div>
-        {% if current_user.is_anonymous %}
-        {% else %}
-        <div class="nav navbar-nav navbar-right">
-            <a class="nav-link nav-link-mine" href="{{ url_for('tags') }}">Tagy</a>
-            <form action="{{ url_for('logout') }}" method="post">
-                <input type="image" src="{{url_for('static', filename='svg/kapitan_leave.svg')}}" class="img-fluid" width="40" height="40"/>
-            </form>
-            <form action="{{ url_for('new_post') }}" method="post">
-                <input type="image" src="{{url_for('static', filename='svg/kapitan_new_post.svg')}}" class="img-fluid" width="40" height="40"/>
-            </form>
-        </div>
-        {% endif %}
+    {% if current_user.is_anonymous %}
+    {% else %}
+    <div class="nav navbar-nav navbar-right">
+        <a class="nav-link nav-link-mine" href="{{ url_for('tags') }}">Tagy</a>
+        <form action="{{ url_for('logout') }}" method="post">
+            <input type="image" src="{{url_for('static', filename='svg/kapitan_leave.svg')}}" class="img-fluid" width="40" height="40"/>
+        </form>
+        <form action="{{ url_for('new_post') }}" method="post">
+            <input type="image" src="{{url_for('static', filename='svg/kapitan_new_post.svg')}}" class="img-fluid" width="40" height="40"/>
+        </form>
+    </div>
+    {% endif %}
   </div>
 </nav>
 
