@@ -123,3 +123,7 @@ def delete_comment( comment_id ):
        db.session.delete(comment)
        db.session.commit()
        return redirect(url_for('post', post_id=post_id))
+
+@app.route('/caterpillar')
+def caterpillar():
+       return redirect(url_for('static',filename='caterpillarDream/index.html'))
