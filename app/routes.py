@@ -126,4 +126,4 @@ def delete_comment( comment_id ):
 
 @app.route('/caterpillar')
 def caterpillar():
-       return redirect(url_for('static',filename='caterpillarDream/index.html'))
+       return render_template('catterpillar.html', title="Caterpillar dream")
